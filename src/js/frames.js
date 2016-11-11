@@ -73,6 +73,27 @@ var frames = {
     };
   },
 
+  checkCollision: function (frame) {
+    for (var vertexIndex = 0; vertexIndex < frame.geometry.vertices.length; vertexIndex++) {
+      var localVertex = frame.geometry.vertices[vertexIndex].clone();
+      var globalVertex = localVertex.applyMatrix4( frame.matrix );
+      var directionVector = globalVertex.sub( frame.position );
+
+      var ray = new THREE.Raycaster( frame.position.clone(), directionVector.clone().normalize() );
+      var other_frames = [];
+      for ( var i = 0; i < frames.list.length; i++ ) {
+        if ( frames.list[i].key !== frame.key ) {
+          other_frames.push(frames.list[i]);
+        }
+      }
+      var collisionResults = ray.intersectObjects( other_frames );
+      if ( collisionResults.length > 0 && collisionResults[0].distance < directionVector.length() ) {
+        return true;
+      }
+    }
+    return false;
+  },
+
   add: function (key, data) {
     var frame = new THREE.Mesh(frames.geometry, frames.material);
     frame.position.x = data.xpos;

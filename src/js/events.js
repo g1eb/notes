@@ -80,13 +80,15 @@ var events = {
 
       if ( !!events.clickedFrame ) {
         var data = frames.calcPosition(event);
-        events.clickedFrame.position.x = data.xpos;
-        events.clickedFrame.position.y = data.ypos;
-        events.clickedFrame.position.z = data.zpos;
-        events.clickedFrame.rotation.y = data.yrot;
-        events.clickedFrame.text.position.copy(events.clickedFrame.position);
-        events.clickedFrame.text.rotation.copy(events.clickedFrame.rotation);
-        sync.updateFramePosition(events.clickedFrame);
+        if ( !frames.checkCollision(events.clickedFrame) ) {
+          events.clickedFrame.position.x = data.xpos;
+          events.clickedFrame.position.y = data.ypos;
+          events.clickedFrame.position.z = data.zpos;
+          events.clickedFrame.rotation.y = data.yrot;
+          events.clickedFrame.text.position.copy(events.clickedFrame.position);
+          events.clickedFrame.text.rotation.copy(events.clickedFrame.rotation);
+          sync.updateFramePosition(events.clickedFrame);
+        }
       } else {
         app.camera.rotation.y += movementX * 0.01;
       }
