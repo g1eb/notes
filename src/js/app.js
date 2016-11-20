@@ -5,6 +5,7 @@ var app = {
   dirty: false,
   scene: undefined,
   camera: undefined,
+  effect: undefined,
   controls: undefined,
   renderer: undefined,
 
@@ -32,6 +33,13 @@ var app = {
       device.streamVideo();
     } else {
       skybox.load();
+      if ( WEBVR.isLatestAvailable() === false ) {
+        document.body.appendChild( WEBVR.getMessage() );
+      } else {
+        app.controls = new THREE.VRControls(app.camera);
+        app.effect = new THREE.VREffect(app.renderer);
+        document.body.appendChild(WEBVR.getButton(app.effect));
+      }
     }
 
     dev.init();
@@ -57,7 +65,7 @@ var app = {
 
     // Render if that is necessary
     if ( app.dirty ) {
-      app.renderer.render(app.scene, app.camera);
+      app.effect.render(app.scene, app.camera);
       app.dirty = false;
     }
 
